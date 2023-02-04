@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jresearch</groupId>
+		<artifactId>org.jresearch.pom</artifactId>
+		<version>29-SNAPSHOT</version>
+	</parent>
+	<groupId>org.jresearch.kafka.ai-tune</groupId>
+	<artifactId>org.jresearch.kafka.ai-tune.pom</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>JRS: Apache Kafka AI based tune-up application POM</name>
+	<url>https://github.com/jresearchsoftware/kafka-ai-tune</url>
+	<scm>
+		<developerConnection>scm:git:https://github.com/jresearchsoftware/kafka-ai-tune.git</developerConnection>
+		<url>https://github.com/jresearchsoftware/kafka-ai-tune</url>
+		<tag>HEAD</tag>
+	</scm>
+	<modules>
+		<module>../app</module>
+		<module>../module</module>
+	</modules>
+	<properties>
+		<java.version>17</java.version>
+		<sonar.organization>hortonolite</sonar.organization>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jresearch.kafka.ai-tune</groupId>
+				<artifactId>org.jresearch.kafka.ai-tune.app</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jresearch.kafka.ai-tune</groupId>
+				<artifactId>org.jresearch.kafka.ai-tune.module</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

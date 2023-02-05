@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        cache: maven
+        gpg-private-key: ${{ secrets.GPG_KEY }} 
+    - name: maven-settings-xml-action
+      uses: whelk-io/maven-settings-xml-action@v21
+      with:
+        repositories: |
+          [
+            { "id": "central", "url": "https://repo.maven.apache.org/maven2", "releases": { "enabled": "true" }, "snapshots": { "enabled": "true"} },
+            { "id": "sonatype-snapshots", "url": "https://oss.sonatype.org/content/repositories/snapshots", "releases": { "enabled": "false" }, "snapshots": { "enabled": "true"} }
+          ]
+        servers: |
+          [
+          {
+              "id": "ossrh",
+              "username": "${{ secrets.SONATYPE_USERNAME }}",
+              "password": "${{ secrets.SONATYPE_PASSWORD }}"
+          },
+          {
+              "id": "gpg.passphrase",
+              "username": "fake",
+              "passphrase": "${{ secrets.GPG_PASSPHRASE }}"
+          }
+          ]
+    - name: Set GIT user 
+      run:  |
+        git config --global user.name 'foal' 
+        git config --global user.email 'stas@jresearch.org'
+    - name: Verion update check
+      run: mvn versions:resolve-ranges versions:update-properties -Dincludes=com.jresearchsoft*:*,org.jresearch*:* -B
+      working-directory: pom
+    - name: Release
+      run: mvn release:clean release:prepare release:perform -B -P ci
+      working-directory: pom
+    - name: Push released version to GitHub
+      run: git push && git push --tags
+

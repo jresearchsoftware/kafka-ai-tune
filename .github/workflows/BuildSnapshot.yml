@@ -37,7 +37,7 @@ jobs:
       with:
         junit_files: "**/target/surefire-reports/*.xml"
     - name: Deploy
-      run: mvn deploy -Dmaven.test.skip -B -Djib.to.auth.username=${{ secrets.JIB_USER }} -Djib.to.auth.password=${{ secrets.JIB_TOKEN }}
+      run: mvn deploy -Dmaven.test.skip -B -Djib.to.auth.username=${{ vars.JIB_USER }} -Djib.to.auth.password=${{ secrets.JIB_TOKEN }}
       working-directory: pom
       
   sonar:

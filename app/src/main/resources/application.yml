@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: "kafka-benchmark-client"
+  jmx:
+    enabled: true
+bootstrap.servers: "localhost:9092"
+management:
+  port: 8080
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -5,11 +5,11 @@ import java.util.Properties;
 import lombok.Data;
 
 @Data
-public class ProducerClientConfig{
+public class KafkaClientConfig{
 	private String name;
 	private Properties props;
 
-	public ProducerClientConfig(String name, Properties props) {
+	public KafkaClientConfig(String name, Properties props) {
 		super();
 		this.name = name;
 		this.props = props;

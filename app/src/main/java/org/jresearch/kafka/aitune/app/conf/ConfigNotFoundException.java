@@ -10,7 +10,7 @@ public class ConfigNotFoundException extends RuntimeException{
 	private final String name;
 
 	public ConfigNotFoundException(ConfigEntity entity, String name) {
-		super(entity.name() + ": " + name + "is not found");
+		super(entity.name() + ": " + name + " is not found");
 		this.entity = entity;
 		this.name = name;
 	}

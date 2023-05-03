@@ -7,9 +7,13 @@ public class RunnerConfig {
 
 	private String producerName;
 	
+	private String consumerName;
+	
 	private String workloadName;
 	
-	private ProducerClientConfig producerConfig;
+	private KafkaClientConfig producerConfig;
+	
+	private KafkaClientConfig consumerConfig;
 	
 	private WorkloadConfig workloadConfig;
 	

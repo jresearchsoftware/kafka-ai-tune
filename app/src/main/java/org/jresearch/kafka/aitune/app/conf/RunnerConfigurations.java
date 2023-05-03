@@ -26,11 +26,15 @@ public class RunnerConfigurations {
 	@Autowired
 	private ProducerConfigurations producers;
 	
+	@Autowired
+	private ConsumerConfigurations consumers;
+
 	@PostConstruct
 	protected void init() {
 		runners.stream().forEach(r->{
 			r.setProducerConfig(producers.get(r.getProducerName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.producer, r.getProducerName())));
 			r.setWorkloadConfig(workloads.get(r.getWorkloadName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.workload, r.getWorkloadName())));
+			r.setConsumerConfig(consumers.get(r.getConsumerName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.consumer, r.getConsumerName())));
 		});
 	}
 	

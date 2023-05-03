@@ -5,34 +5,17 @@ import java.util.Properties;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.jresearch.kafka.aitune.runner.model.MessageType;
-import org.jresearch.kafka.aitune.runner.model.ProducerClientConfig;
 import org.jresearch.kafka.aitune.runner.model.RunnerConfig;
 import org.jresearch.kafka.aitune.runner.model.WorkloadConfig;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.MicrometerProducerListener;
 import org.springframework.stereotype.Service;
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import io.micrometer.core.instrument.MeterRegistry;
 
 @Service
-public class KafkaTemplateService implements BeanFactoryAware {
-
-	@Autowired
-	private DefaultListableBeanFactory beanFactory;
-
-	@Value("${bootstrap.servers}")
-	private String bootstrapServers;
-
-	@Autowired
-	private MeterRegistry registry;
+public class KafkaTemplateService extends BaseKafkaService {
 
 	public KafkaTemplate<?, ?> getTemplate(RunnerConfig runnerConfig) {
 
@@ -57,22 +40,8 @@ public class KafkaTemplateService implements BeanFactoryAware {
 		}
 	}
 
-	protected String getTemplateName(ProducerClientConfig producerConfig) {
-		return producerConfig.getName() + "_template";
-	}
-
-	protected String getFactoryName(ProducerClientConfig producerConfig) {
-		return producerConfig.getName() + "_factory";
-	}
-
 	protected void removeTemplate(RunnerConfig runnerConfig) {
-		ProducerClientConfig producerConfig = runnerConfig.getProducerConfig();
-		beanFactory.removeBeanDefinition(getTemplateName(producerConfig));
-		beanFactory.removeBeanDefinition(getFactoryName(producerConfig));
+		removeTemplate(runnerConfig.getProducerConfig());
 	}
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = (DefaultListableBeanFactory) beanFactory;
-	}
 }

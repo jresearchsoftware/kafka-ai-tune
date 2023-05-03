@@ -6,12 +6,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.jresearch.kafka.aitune.app.conf.RunnerConfigurations;
 import org.jresearch.kafka.aitune.runner.content.ContentProvider;
 import org.jresearch.kafka.aitune.runner.service.ContentProviderService;
+import org.jresearch.kafka.aitune.runner.service.KafkaListenerService;
 import org.jresearch.kafka.aitune.runner.service.KafkaTemplateService;
 import org.jresearch.kafka.aitune.runner.service.ProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.core.instrument.MeterRegistry;
@@ -28,6 +30,9 @@ public class AppService implements ApplicationRunner {
 
 	@Autowired
 	private KafkaTemplateService kafkaTemplateService;
+
+	@Autowired
+	private KafkaListenerService kafkaListenerService;
 
 	@Autowired
 	private ContentProviderService contentProviderService;
@@ -48,6 +53,8 @@ public class AppService implements ApplicationRunner {
 			ContentProvider valueProvier = contentProviderService.getContentProvider(r.getWorkloadConfig(), false);
 			ProducerService producerService = new ProducerService<>(r, template, keyProvier, valueProvier, registry);
 			producerService.run();
+			KafkaMessageListenerContainer container = kafkaListenerService.getListener(r);
+			container.start();
 		});
 	}
 }

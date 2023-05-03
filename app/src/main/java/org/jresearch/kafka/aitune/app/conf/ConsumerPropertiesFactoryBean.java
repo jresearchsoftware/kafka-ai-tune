@@ -11,14 +11,15 @@ import org.jresearch.kafka.aitune.runner.model.KafkaClientConfig;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.CollectionFactory;
 
-public class ProducerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
+
+public class ConsumerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 
 	@Override
 	protected Properties createProperties() {
 		Properties result = CollectionFactory.createStringAdaptingProperties();
 		HashMap<String, KafkaClientConfig> configMap = new HashMap<>();
 		process((properties, map) -> {
-			Object clientMap = map.get(ConfigAttributes.producers.name());
+			Object clientMap = map.get(ConfigAttributes.consumers.name());
 			if(clientMap == null || (!(clientMap instanceof Map))) {
 				throw new ConfigurationException("Cannot parse client configuration, check the format");
 			}
@@ -39,7 +40,7 @@ public class ProducerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 				configMap.put(configname, new KafkaClientConfig(configname, p));
 			});
 		});
-		result.put(ConfigAttributes.producerConfigs.name(), configMap);
+		result.put(ConfigAttributes.consumerConfigs.name(), configMap);
 		return result;
 	}
 

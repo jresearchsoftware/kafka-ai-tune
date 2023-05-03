@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 import lombok.Data;
 
 @Component
-@PropertySource(value = "file:${PRODUCER_CONFIG_DIR}/producers.yml", factory = ProducerPropertySourceFactory.class)
+@PropertySource(value = "file:${CONSUMER_CONFIG_DIR}/consumers.yml", factory = ConsumerPropertySourceFactory.class)
 @ConfigurationProperties
 @Data
-public class ProducerConfigurations{
-	protected Map<String, KafkaClientConfig> producerConfigs;
+public class ConsumerConfigurations {
+	protected Map<String, KafkaClientConfig> consumerConfigs;
 
 	public Optional<KafkaClientConfig> get(String name) {
-		return Optional.ofNullable(producerConfigs.get(name));
+		return Optional.ofNullable(consumerConfigs.get(name));
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.jresearch.kafka.aitune.runner.model.MessageType;
 import org.jresearch.kafka.aitune.runner.model.RunnerConfig;
 import org.jresearch.kafka.aitune.runner.model.WorkloadConfig;
@@ -33,9 +34,13 @@ public class KafkaTemplateService extends BaseKafkaService {
 	}
 
 	protected String getSerializerName(MessageType type) {
-		if (type == MessageType.AVRO) {
+		switch (type) {
+		case STRING:
+			return StringSerializer.class.getName();
+		case AVRO:
 			return KafkaAvroSerializer.class.getName();
-		} else {
+		case BYTE:
+		default:
 			return ByteArraySerializer.class.getName();
 		}
 	}

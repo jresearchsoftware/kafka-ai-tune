@@ -49,8 +49,8 @@ public class AppService implements ApplicationRunner {
 		atl.set(System.currentTimeMillis() / 1000);
 		runnerConfigurations.getRunners().stream().forEach(r -> {
 			KafkaTemplate template = kafkaTemplateService.getTemplate(r);
-			ContentProvider keyProvier = contentProviderService.getContentProvider(r.getWorkloadConfig(), true);
-			ContentProvider valueProvier = contentProviderService.getContentProvider(r.getWorkloadConfig(), false);
+			ContentProvider keyProvier = contentProviderService.getKeyContentProvider(r.getWorkloadConfig());
+			ContentProvider valueProvier = contentProviderService.getValueContentProvider(r.getWorkloadConfig());
 			ProducerService producerService = new ProducerService<>(r, template, keyProvier, valueProvier, registry);
 			producerService.run();
 			KafkaMessageListenerContainer container = kafkaListenerService.getListener(r);

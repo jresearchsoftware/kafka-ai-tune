@@ -17,6 +17,8 @@ public class WorkloadConfig{
 	
 	private int messageSize;
 	
+	private int keySize;
+	
 	private MessageType keyType;
 	
 	private MessageType valueType;
@@ -24,5 +26,7 @@ public class WorkloadConfig{
 	private String valueSchemaFile;
 	
 	private String keySchemaFile;
+	
+	private KeyDistributionType keyDistributionType;
 	
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import lombok.Data;
 
 @Component
-@PropertySource(value = "file:${WORKLOAD_DIR}/workloads.yml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "file:${WORKLOAD_DIR}/workloads2.yml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "configuration")
 @Data
 public class WorkloadConfigurations {

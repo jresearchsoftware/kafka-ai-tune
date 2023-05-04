@@ -53,7 +53,7 @@ public class ContentProviderService {
 			return new NullContentProvider();
 		}
 		if(distributionType == KeyDistributionType.FIXED_KEY_SET) {
-			return new StringSetKeyProvider(3, 10);
+			return new StringSetKeyProvider(wl.getKeySetSize(), wl.getKeySize());
 		}
 		throw new IllegalArgumentException("Unexpected value: " + distributionType);
 	}

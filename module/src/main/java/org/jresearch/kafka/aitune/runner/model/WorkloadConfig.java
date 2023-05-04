@@ -15,9 +15,11 @@ public class WorkloadConfig{
 	
 	private int replicationFactor;
 	
-	private int messageSize;
+	private int messageSize = 1024;
 	
-	private int keySize;
+	private int keySize = 1024;
+	
+	private int keySetSize = 10;
 	
 	private MessageType keyType;
 	

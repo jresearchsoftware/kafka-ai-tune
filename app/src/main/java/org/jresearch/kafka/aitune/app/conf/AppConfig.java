@@ -8,4 +8,5 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 	// Application configuration
 	// boot strap from org.jresearch.kafka.aitune.app.Application
+	
 }

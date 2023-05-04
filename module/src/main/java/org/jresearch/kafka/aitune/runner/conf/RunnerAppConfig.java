@@ -1,5 +1,6 @@
 package org.jresearch.kafka.aitune.runner.conf;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,4 +15,7 @@ public class RunnerAppConfig {
 //	public  MeterRegistry getMeterRegistry() {
 //		return new SimpleMeterRegistry();
 //	}
+	@Value(value = "${bootstrap.servers")
+	private String bootstrapServers;
+
 }

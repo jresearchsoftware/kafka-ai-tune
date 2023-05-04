@@ -3,12 +3,14 @@ package org.jresearch.kafka.aitune.app.service;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jresearch.kafka.aitune.app.conf.RunnerConfigurations;
 import org.jresearch.kafka.aitune.runner.content.ContentProvider;
 import org.jresearch.kafka.aitune.runner.service.ContentProviderService;
 import org.jresearch.kafka.aitune.runner.service.KafkaListenerService;
 import org.jresearch.kafka.aitune.runner.service.KafkaTemplateService;
 import org.jresearch.kafka.aitune.runner.service.ProducerService;
+import org.jresearch.kafka.aitune.runner.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -40,6 +42,9 @@ public class AppService implements ApplicationRunner {
 	@Autowired
 	private MeterRegistry registry;
 	
+	@Autowired
+	private TopicService topicService;
+	
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
@@ -47,7 +52,10 @@ public class AppService implements ApplicationRunner {
 		registry.more().timeGauge("run_start", null,
 				atl, TimeUnit.SECONDS, AtomicLong::doubleValue);
 		atl.set(System.currentTimeMillis() / 1000);
+		String experimentId = RandomStringUtils.randomAlphanumeric(5);
 		runnerConfigurations.getRunners().stream().forEach(r -> {
+			r.setTopic(r.getTopic() + "_" + experimentId);
+			topicService.createTopic(r);
 			KafkaTemplate template = kafkaTemplateService.getTemplate(r);
 			ContentProvider keyProvier = contentProviderService.getKeyContentProvider(r.getWorkloadConfig());
 			ContentProvider valueProvier = contentProviderService.getValueContentProvider(r.getWorkloadConfig());

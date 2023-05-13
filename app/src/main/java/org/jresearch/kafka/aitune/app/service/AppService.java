@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,7 @@ public class AppService implements ApplicationRunner {
 
 			if (r.getConsumerName() != null) {
 				log.info("Starting consumer service");
-				KafkaMessageListenerContainer container = kafkaListenerService.getListener(r);
+				ConcurrentMessageListenerContainer container = kafkaListenerService.getListener(r);
 				container.start();
 			}
 			while (!adminService.consumersReady(r.getWaitForConsumerGroups())) {

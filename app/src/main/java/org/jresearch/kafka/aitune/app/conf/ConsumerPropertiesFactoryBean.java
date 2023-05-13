@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jresearch.kafka.aitune.runner.model.KafkaClientConfig;
+import org.jresearch.kafka.aitune.runner.model.ConsumerClientConfig;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.CollectionFactory;
 
@@ -20,7 +20,7 @@ public class ConsumerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 	protected Properties createProperties() {
 		log.info("Creating consumer properties ...");
 		Properties result = CollectionFactory.createStringAdaptingProperties();
-		HashMap<String, KafkaClientConfig> configMap = new HashMap<>();
+		HashMap<String, ConsumerClientConfig> configMap = new HashMap<>();
 		process((properties, map) -> {
 			Object clientMap = map.get(ConfigAttributes.consumers.name());
 			if(clientMap == null || (!(clientMap instanceof Map))) {
@@ -30,16 +30,21 @@ public class ConsumerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 			if(configMap == null || (!(configMap instanceof Map))) {
 				throw new ConfigurationException("Cannot parse client configuration, check the format");
 			}
-			List<Map<String,String>> clientConfigs = (List)clientConfigMap;
+			List<Map<String,Object>> clientConfigs = (List)clientConfigMap;
 			clientConfigs.stream().forEach(e->{
-				String configname = e.keySet().iterator().next();
+				int concurrency = 0;
+				if(e.containsKey(ConfigAttributes.concurrency.name())) {
+					concurrency = (Integer)e.get(ConfigAttributes.concurrency.name());
+				}
+				String consumerValues = (String)e.get(ConfigAttributes.consumer.name());
+				String configname = (String)e.get(ConfigAttributes.name.name());
 				final Properties p = new Properties();
 				try {
-					p.load(new StringReader(e.values().iterator().next()));
+					p.load(new StringReader(consumerValues));
 				} catch (IOException ex) {
 					throw new ConfigurationException("Unable to parse client configuration", ex);
 				}
-				configMap.put(configname, new KafkaClientConfig(configname, p));
+				configMap.put(configname, new ConsumerClientConfig(configname, p, concurrency));
 			});
 		});
 		log.debug("Parsed config map {}", configMap);

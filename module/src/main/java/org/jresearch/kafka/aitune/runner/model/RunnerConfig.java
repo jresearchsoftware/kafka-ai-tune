@@ -16,7 +16,7 @@ public class RunnerConfig {
 	
 	private KafkaClientConfig producerConfig;
 	
-	private KafkaClientConfig consumerConfig;
+	private ConsumerClientConfig consumerConfig;
 	
 	private WorkloadConfig workloadConfig;
 	

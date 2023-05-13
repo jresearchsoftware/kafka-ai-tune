@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import lombok.Data;
 
 @Component
-@PropertySource(value = "file:${WORKLOAD_DIR}/runners.yml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "file:${RUNNER}", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "configuration")
 @Data
 public class RunnerConfigurations {
@@ -32,9 +32,9 @@ public class RunnerConfigurations {
 	@PostConstruct
 	protected void init() {
 		runners.stream().forEach(r->{
-			r.setProducerConfig(producers.get(r.getProducerName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.producer, r.getProducerName())));
+			r.setProducerConfig(producers.get(r.getProducerName()).orElse(null));
 			r.setWorkloadConfig(workloads.get(r.getWorkloadName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.workload, r.getWorkloadName())));
-			r.setConsumerConfig(consumers.get(r.getConsumerName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.consumer, r.getConsumerName())));
+			r.setConsumerConfig(consumers.get(r.getConsumerName()).orElse(null));
 		});
 	}
 	

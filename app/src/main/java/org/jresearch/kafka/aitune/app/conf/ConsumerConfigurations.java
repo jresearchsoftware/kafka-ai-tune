@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import lombok.Data;
 
 @Component
-@PropertySource(value = "file:${CONSUMER_CONFIG_DIR}/consumers.yml", factory = ConsumerPropertySourceFactory.class)
+@PropertySource(value = "file:${CONSUMER_CONFIG}", factory = ConsumerPropertySourceFactory.class)
 @ConfigurationProperties
 @Data
 public class ConsumerConfigurations {

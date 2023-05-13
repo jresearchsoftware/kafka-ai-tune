@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public class ConfigNotFoundException extends RuntimeException{
 
+	private static final long serialVersionUID = 5241988738560557117L;
+
 	private final ConfigEntity entity;
 	
 	private final String name;

@@ -11,10 +11,14 @@ import org.jresearch.kafka.aitune.runner.model.KafkaClientConfig;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.CollectionFactory;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ProducerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 
 	@Override
 	protected Properties createProperties() {
+		log.info("Creating producer properties ...");
 		Properties result = CollectionFactory.createStringAdaptingProperties();
 		HashMap<String, KafkaClientConfig> configMap = new HashMap<>();
 		process((properties, map) -> {
@@ -39,6 +43,7 @@ public class ProducerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 				configMap.put(configname, new KafkaClientConfig(configname, p));
 			});
 		});
+		log.debug("Parsed config map {}", configMap);
 		result.put(ConfigAttributes.producerConfigs.name(), configMap);
 		return result;
 	}

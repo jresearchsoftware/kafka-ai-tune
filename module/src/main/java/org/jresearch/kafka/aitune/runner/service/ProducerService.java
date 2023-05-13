@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.jresearch.kafka.aitune.runner.content.ContentProvider;
 import org.jresearch.kafka.aitune.runner.model.RunnerConfig;
 import org.jresearch.kafka.aitune.runner.model.WorkloadConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import com.google.common.util.concurrent.RateLimiter;
@@ -42,6 +41,7 @@ public class ProducerService<K, V> {
 	}
 
 	public void run() {
+		log.info("Starting producing messages ...");
 		registry.more().timeGauge("exp_start", Collections.singleton(Tag.of("client_id", runnerConfig.getProducerName())),
 				startExpirement, TimeUnit.SECONDS, AtomicLong::doubleValue);
 		startExpirement.set(System.currentTimeMillis() / 1000);

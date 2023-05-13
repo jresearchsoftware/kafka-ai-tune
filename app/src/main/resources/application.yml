@@ -4,8 +4,12 @@ spring:
   jmx:
     enabled: true
 bootstrap.servers: "localhost:9092"
+admin.timeout.ms: 6000
+wait.consumers.delay.ms: 2000
+server:
+  port: ${PORT}
 management:
-  port: 8080
+  port: ${PORT}
   endpoints:
     web:
       exposure:

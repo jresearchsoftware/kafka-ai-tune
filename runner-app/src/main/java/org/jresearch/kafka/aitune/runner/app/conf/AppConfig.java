@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Configuration
 @Data
-@ComponentScan(basePackages = { "org.jresearch.kafka.aitune.runner.app" })
+@ComponentScan(basePackages = { "org.jresearch.kafka.aitune.runner.service" })
 public class AppConfig {
 
 	@Value("${admin.topic:_benchmark}")

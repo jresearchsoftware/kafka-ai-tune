@@ -20,9 +20,6 @@
 	</scm>
 	<modules>
 		<module>../client</module>
-		<module>../runner</module>
-		<module>../producer</module>
-		<module>../consumer</module>
 		<module>../producer-app</module>
 		<module>../consumer-app</module>
 		<module>../runner-app</module>
@@ -31,23 +28,4 @@
 		<java.version>17</java.version>
 		<sonar.organization>jresearchsoftware</sonar.organization>
 	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jresearch.kafka.ai-tune</groupId>
-				<artifactId>org.jresearch.kafka.ai-tune.runner.app</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jresearch.kafka.ai-tune</groupId>
-				<artifactId>org.jresearch.kafka.ai-tune.producer.app</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jresearch.kafka.ai-tune</groupId>
-				<artifactId>org.jresearch.kafka.ai-tune.consumer.app</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>

@@ -1,14 +1,11 @@
 package org.jresearch.kafka.aitune.consumer.app;
 
-import org.jresearch.kafka.aitune.consumer.app.conf.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(exclude = KafkaAutoConfiguration.class)
-@Import(AppConfig.class)
 @EnableScheduling
 public class Application {
 

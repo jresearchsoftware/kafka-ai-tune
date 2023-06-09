@@ -1,4 +1,4 @@
-package org.jresearch.kafka.aitune.consumer.conf;
+package org.jresearch.kafka.aitune.producer.conf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +18,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 @Configuration
 @EnableKafka
-@ComponentScan(basePackages = { "org.jresearch.kafka.aitune.consumer.service" })
-public class ConsumerAppConfig {
+@ComponentScan(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
+public class ProducerAppConfig {
 
 	@Value("${bootstrap.servers}")
 	private String bootstrapServers;
@@ -30,6 +30,7 @@ public class ConsumerAppConfig {
 		configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, RunnerConfigDeserializer.class);
+		configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		return new DefaultKafkaConsumerFactory<>(configProps);
 	}
 

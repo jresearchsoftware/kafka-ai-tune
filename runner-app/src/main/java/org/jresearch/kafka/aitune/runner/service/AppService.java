@@ -1,9 +1,7 @@
-package org.jresearch.kafka.aitune.runner.app.service;
+package org.jresearch.kafka.aitune.runner.service;
 
 import org.jresearch.kafka.aitune.runner.app.conf.AppConfig;
 import org.jresearch.kafka.aitune.runner.app.conf.RunnerConfigurations;
-import org.jresearch.kafka.aitune.runner.service.AdminService;
-import org.jresearch.kafka.aitune.runner.service.RunnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

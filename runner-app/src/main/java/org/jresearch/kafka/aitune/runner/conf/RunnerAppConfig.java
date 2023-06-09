@@ -24,6 +24,10 @@ public class RunnerAppConfig {
 //		return new SimpleMeterRegistry();
 //	}
 
+	@Value("${admin.topic:_benchmark}")
+	private String adminTopicName;
+
+
 	@Value("${bootstrap.servers}")
 	private String bootstrapServers;
 	

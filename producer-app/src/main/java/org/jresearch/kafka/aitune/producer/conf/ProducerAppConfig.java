@@ -8,9 +8,11 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.serde.RunnerConfigDeserializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -19,6 +21,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 @Configuration
 @EnableKafka
 @ComponentScan(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
+@EnableJpaRepositories(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
+@EntityScan(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
 public class ProducerAppConfig {
 
 	@Value("${bootstrap.servers}")

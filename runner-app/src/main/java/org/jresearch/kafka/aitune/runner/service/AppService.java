@@ -1,5 +1,6 @@
 package org.jresearch.kafka.aitune.runner.service;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jresearch.kafka.aitune.runner.app.conf.AppConfig;
 import org.jresearch.kafka.aitune.runner.app.conf.RunnerConfigurations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,6 @@ public class AppService implements ApplicationRunner {
 	@NonNull
 	private RunnerConfigurations runnerConfigurations;
 
-//	@Autowired
-//	@NonNull
-//	private MeterRegistry registry;
-
 	@Autowired
 	@NonNull
 	private AdminService adminService;
@@ -36,22 +33,26 @@ public class AppService implements ApplicationRunner {
 	@NonNull
 	private AppConfig config;
 
+	@Autowired
+	@NonNull
+	private MetricService metricService;
+
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		log.info("Start running app");
-		if(!adminService.topicExists(config.getAdminTopicName())) {
-			adminService.createTopic(config.getAdminTopicName(),1,1);
+		if (!adminService.topicExists(config.getAdminTopicName())) {
+			adminService.createTopic(config.getAdminTopicName(), 1, 1);
 		}
-//		AtomicLong atl = new AtomicLong();
-//		registry.more().timeGauge("run_start", null, atl, TimeUnit.SECONDS, AtomicLong::doubleValue);
-//		atl.set(System.currentTimeMillis() / 1000);
+		String experimentId = RandomStringUtils.randomAlphanumeric(5);
+		log.info("Starting experiment id: {}", experimentId);
+
+		metricService.startExperiment(experimentId);
 		runnerConfigurations.getRunners().stream().forEach(r -> {
-			// r.setTopic(r.getTopic() + "_" + experimentId);
 			if (r.isShouldCreateTopic()) {
 				log.debug("Creating topic {}", r.getTopic());
 				adminService.createTopic(r);
 			}
-			runnerService.send(config.getAdminTopicName(),r);
+			runnerService.send(config.getAdminTopicName(), experimentId, r);
 		});
 	}
 

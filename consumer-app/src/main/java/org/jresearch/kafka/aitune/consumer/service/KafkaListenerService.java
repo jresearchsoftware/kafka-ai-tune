@@ -2,6 +2,7 @@ package org.jresearch.kafka.aitune.consumer.service;
 
 import java.util.Properties;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -26,10 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KafkaListenerService extends BaseKafkaService {
 
-	public ConcurrentMessageListenerContainer<?, ?> getListener(RunnerConfig runnerConfig) {
+	public ConcurrentMessageListenerContainer<?, ?> getListener(String experimentId, RunnerConfig runnerConfig) {
 
 		Properties maps = runnerConfig.getConsumerConfig().getProps();
-		maps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		maps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+
+		String clientId = maps.get(ProducerConfig.CLIENT_ID_CONFIG).toString();
+		maps.put(ProducerConfig.CLIENT_ID_CONFIG, String.join("_", experimentId, runnerConfig.getTopic(),clientId));
 
 		WorkloadConfig wlConfig = runnerConfig.getWorkloadConfig();
 

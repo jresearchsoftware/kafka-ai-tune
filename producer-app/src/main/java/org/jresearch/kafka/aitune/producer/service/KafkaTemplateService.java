@@ -19,11 +19,12 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 @Service
 public class KafkaTemplateService extends BaseKafkaService {
 
-	public KafkaTemplate<?, ?> getTemplate(RunnerConfig runnerConfig) {
+	public KafkaTemplate<?, ?> getTemplate(String experimentId, RunnerConfig runnerConfig) {
 
 		Properties maps = runnerConfig.getProducerConfig().getProps();
 		maps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-
+		
+		maps.put(ProducerConfig.CLIENT_ID_CONFIG, NameUtil.getClientId(experimentId, runnerConfig));
 		WorkloadConfig wlConfig = runnerConfig.getWorkloadConfig();
 		maps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerName(wlConfig.getKeyType()));
 		maps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerName(wlConfig.getValueType()));
@@ -34,6 +35,7 @@ public class KafkaTemplateService extends BaseKafkaService {
 		return new KafkaTemplate<>(producerFactory);
 	}
 
+	
 	protected String getSerializerName(MessageType type) {
 		switch (type) {
 		case STRING:

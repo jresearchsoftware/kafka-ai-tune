@@ -1,9 +1,5 @@
 package org.jresearch.kafka.aitune.producer.service;
 
-import java.util.Collections;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.model.WorkloadConfig;
 import org.jresearch.kafka.aitune.producer.content.ContentProvider;
@@ -11,11 +7,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import com.google.common.util.concurrent.RateLimiter;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class ProducerService<K, V> {
 
 	protected final RunnerConfig runnerConfig;
@@ -26,25 +22,9 @@ public class ProducerService<K, V> {
 
 	protected final ContentProvider<V> valueProvider;
 
-	private AtomicLong startExpirement = new AtomicLong();
-
-	protected final MeterRegistry registry;
-
-	public ProducerService(RunnerConfig runnerConfig, KafkaTemplate<K, V> kafkaTemplate, ContentProvider<K> keyProvider,
-			ContentProvider<V> valueProvider, MeterRegistry registry) {
-		super();
-		this.runnerConfig = runnerConfig;
-		this.kafkaTemplate = kafkaTemplate;
-		this.keyProvider = keyProvider;
-		this.valueProvider = valueProvider;
-		this.registry = registry;
-	}
-
+	
 	public void run() {
 		log.info("Starting producing messages ...");
-		registry.more().timeGauge("exp_start", Collections.singleton(Tag.of("client_id", runnerConfig.getProducerName())),
-				startExpirement, TimeUnit.SECONDS, AtomicLong::doubleValue);
-		startExpirement.set(System.currentTimeMillis() / 1000);
 		WorkloadConfig wlConfig = runnerConfig.getWorkloadConfig();
 		RateLimiter limiter = RateLimiter.create(wlConfig.getMessageRate());
 		for (int i = 0; i < wlConfig.getNumMessages(); i++) {

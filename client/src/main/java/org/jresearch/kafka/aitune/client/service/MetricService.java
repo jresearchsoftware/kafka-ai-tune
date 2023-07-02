@@ -1,7 +1,9 @@
-package org.jresearch.kafka.aitune.producer.service;
+package org.jresearch.kafka.aitune.client.service;
 
 import java.time.Instant;
 
+import org.jresearch.kafka.aitune.client.conf.NameUtil;
+import org.jresearch.kafka.aitune.client.model.ClientExperiment;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +17,8 @@ public class MetricService {
 	
 	private final MetricRepository metricRepo;
 	
-	public void startExperiment(String experimentId, RunnerConfig r) {
-		metricRepo.save(new ClientExperiment(NameUtil.getClientId(experimentId, r),Instant.now(),experimentId));
+	public void startExperiment(String experimentId, String clientId) {
+		metricRepo.save(new ClientExperiment(clientId,Instant.now(),experimentId));
 	}
 	
 }

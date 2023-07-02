@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.jresearch.kafka.aitune.client.conf.NameUtil;
 import org.jresearch.kafka.aitune.client.model.MessageType;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.model.WorkloadConfig;
@@ -31,10 +32,8 @@ public class KafkaListenerService extends BaseKafkaService {
 
 		Properties maps = runnerConfig.getConsumerConfig().getProps();
 		maps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-
-		String clientId = maps.get(ProducerConfig.CLIENT_ID_CONFIG).toString();
-		maps.put(ProducerConfig.CLIENT_ID_CONFIG, String.join("_", experimentId, runnerConfig.getTopic(),clientId));
-
+		maps.put(ProducerConfig.CLIENT_ID_CONFIG, NameUtil.getConsumerClientId(experimentId, runnerConfig));
+		
 		WorkloadConfig wlConfig = runnerConfig.getWorkloadConfig();
 
 		Deserializer<?> keyDeserializer = getDeserializer(wlConfig.getKeyType());

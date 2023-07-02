@@ -1,6 +1,8 @@
 package org.jresearch.kafka.aitune.producer.service;
 
+import org.jresearch.kafka.aitune.client.conf.NameUtil;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
+import org.jresearch.kafka.aitune.client.service.MetricService;
 import org.jresearch.kafka.aitune.producer.content.ContentProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -46,7 +48,7 @@ public class RunnerConsumer {
 			ContentProvider keyProvier = contentProviderService.getKeyContentProvider(r.getWorkloadConfig());
 			ContentProvider valueProvier = contentProviderService.getValueContentProvider(r.getWorkloadConfig());
 			ProducerService producerService = new ProducerService<>(r, template, keyProvier, valueProvier);
-			metricService.startExperiment(experimentId, r);
+			metricService.startExperiment(experimentId,  NameUtil.getProducerClientId(experimentId, r));
 			producerService.run();
 		}
 

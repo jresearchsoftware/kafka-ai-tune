@@ -3,6 +3,11 @@ spring:
     name: "kafka-benchmark-consumer"
   jmx:
     enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:54321/postgres
+    username: postgres
+    password: postgres1234
+    driverClassname: org.postgresql.Driver
 bootstrap.servers: "localhost:9092"
 admin.timeout.ms: 6000
 wait.consumers.delay.ms: 2000

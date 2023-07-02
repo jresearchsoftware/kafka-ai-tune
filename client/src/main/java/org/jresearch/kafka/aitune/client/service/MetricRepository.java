@@ -1,7 +1,7 @@
-package org.jresearch.kafka.aitune.producer.service;
+package org.jresearch.kafka.aitune.client.service;
 
+import org.jresearch.kafka.aitune.client.model.ClientExperiment;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 @Repository

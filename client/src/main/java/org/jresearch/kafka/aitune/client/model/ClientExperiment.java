@@ -1,4 +1,4 @@
-package org.jresearch.kafka.aitune.producer.service;
+package org.jresearch.kafka.aitune.client.model;
 
 import java.time.Instant;
 

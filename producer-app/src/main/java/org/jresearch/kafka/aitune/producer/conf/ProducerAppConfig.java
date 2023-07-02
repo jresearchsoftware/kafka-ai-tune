@@ -20,9 +20,9 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 @Configuration
 @EnableKafka
-@ComponentScan(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
-@EnableJpaRepositories(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
-@EntityScan(basePackages = { "org.jresearch.kafka.aitune.producer.service" })
+@ComponentScan(basePackages = { "org.jresearch.kafka.aitune.producer.service","org.jresearch.kafka.aitune.client.service" })
+@EnableJpaRepositories(basePackages = { "org.jresearch.kafka.aitune.producer.service","org.jresearch.kafka.aitune.client.service" })
+@EntityScan(basePackages = { "org.jresearch.kafka.aitune.client.model" })
 public class ProducerAppConfig {
 
 	@Value("${bootstrap.servers}")

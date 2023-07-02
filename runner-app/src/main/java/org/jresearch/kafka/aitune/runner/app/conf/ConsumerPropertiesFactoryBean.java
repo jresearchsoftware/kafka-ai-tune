@@ -34,12 +34,14 @@ public class ConsumerPropertiesFactoryBean extends YamlPropertiesFactoryBean{
 			}
 			List<Map<String,Object>> clientConfigs = (List)clientConfigMap;
 			clientConfigs.stream().forEach(e->{
-				int concurrency = 0;
-				if(e.containsKey(ConfigAttributes.concurrency.name())) {
-					concurrency = (Integer)e.get(ConfigAttributes.concurrency.name());
+				String configname = e.keySet().iterator().next();
+				Map<String,Object> consumerConfig = (Map<String, Object>) e.values().iterator().next();
+				int concurrency = 1;
+				if(consumerConfig.containsKey(ConfigAttributes.concurrency.name())) {
+					concurrency = (Integer)consumerConfig.get(ConfigAttributes.concurrency.name());
 				}
-				String consumerValues = (String)e.get(ConfigAttributes.consumer.name());
-				String configname = (String)e.get(ConfigAttributes.name.name());
+				
+				String consumerValues = (String)consumerConfig.get(ConfigAttributes.consumer.name());
 				final Properties p = new Properties();
 				try {
 					p.load(new StringReader(consumerValues));

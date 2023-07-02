@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.jresearch.kafka.aitune.client.conf.NameUtil;
 import org.jresearch.kafka.aitune.client.model.MessageType;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.model.WorkloadConfig;
@@ -24,7 +25,7 @@ public class KafkaTemplateService extends BaseKafkaService {
 		Properties maps = runnerConfig.getProducerConfig().getProps();
 		maps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		
-		maps.put(ProducerConfig.CLIENT_ID_CONFIG, NameUtil.getClientId(experimentId, runnerConfig));
+		maps.put(ProducerConfig.CLIENT_ID_CONFIG, NameUtil.getProducerClientId(experimentId, runnerConfig));
 		WorkloadConfig wlConfig = runnerConfig.getWorkloadConfig();
 		maps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, getSerializerName(wlConfig.getKeyType()));
 		maps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, getSerializerName(wlConfig.getValueType()));

@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ProducerService<K, V> {
+public class ProducerService<K, V> implements Runnable {
 
 	protected final RunnerConfig runnerConfig;
 
@@ -22,12 +22,14 @@ public class ProducerService<K, V> {
 
 	protected final ContentProvider<V> valueProvider;
 
-	
 	public void run() {
-		log.info("Starting producing messages ...");
+		log.info("Starting to produce messages...");
 		WorkloadConfig wlConfig = runnerConfig.getWorkloadConfig();
 		RateLimiter limiter = RateLimiter.create(wlConfig.getMessageRate());
-		for (int i = 0; i < wlConfig.getNumMessages(); i++) {
+		while (true) {
+			if (Thread.interrupted()) {
+				return;
+			}
 			limiter.acquire();
 			kafkaTemplate.send(runnerConfig.getTopic(), keyProvider.getContent(), valueProvider.getContent());
 		}

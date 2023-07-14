@@ -7,7 +7,7 @@ public class WorkloadConfig{
 
 	private String name;
 	
-	private int numMessages;
+	private long timeInSec=60;
 
 	private int messageRate;
 	

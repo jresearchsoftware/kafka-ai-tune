@@ -1,5 +1,10 @@
 package org.jresearch.kafka.aitune.producer.service;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.jresearch.kafka.aitune.client.conf.NameUtil;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.service.MetricService;
@@ -12,7 +17,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +53,12 @@ public class RunnerConsumer {
 			ContentProvider valueProvier = contentProviderService.getValueContentProvider(r.getWorkloadConfig());
 			ProducerService producerService = new ProducerService<>(r, template, keyProvier, valueProvier);
 			metricService.startExperiment(experimentId,  NameUtil.getProducerClientId(experimentId, r));
-			producerService.run();
+			ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+			Future future = executor.submit(producerService);
+			Runnable cancelTask = () -> future.cancel(true);
+
+			executor.schedule(cancelTask, r.getWorkloadConfig().getTimeInSec(), TimeUnit.SECONDS);
+			executor.shutdown();
 		}
 
 	}

@@ -1,5 +1,9 @@
 package org.jresearch.kafka.aitune.consumer.service;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.jresearch.kafka.aitune.client.conf.NameUtil;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.service.MetricService;
@@ -33,6 +37,11 @@ public class RunnerConsumer {
 			metricService.startExperiment(experimentId, NameUtil.getConsumerClientId(experimentId, r));
 			ConcurrentMessageListenerContainer container = kafkaListenerService.getListener(experimentId,r);
 			container.start();
+			ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+			Runnable cancelTask = () -> container.stop();
+
+			executor.schedule(cancelTask, r.getWorkloadConfig().getTimeInSec(), TimeUnit.SECONDS);
+			executor.shutdown();
 		}
 	}
 }

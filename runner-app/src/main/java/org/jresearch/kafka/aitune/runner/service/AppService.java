@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
-import org.jresearch.kafka.aitune.runner.app.conf.AppConfig;
 import org.jresearch.kafka.aitune.runner.app.conf.RunnerConfigurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -42,7 +41,7 @@ public class AppService implements ApplicationRunner {
 
 	@Autowired
 	@NonNull
-	private AppConfig config;
+	final AppConfig config;
 
 	@Autowired
 	@NonNull
@@ -57,11 +56,11 @@ public class AppService implements ApplicationRunner {
 		log.info("Start running app");
 		iterator = runnerConfigurations.getRunners().iterator();
 
-		if (!adminService.topicExists(config.getReqTopicName())) {
-			adminService.createTopic(config.getReqTopicName(), 1, 1);
+		if (!adminService.topicExists(config.getAdminReqTopic())) {
+			adminService.createTopic(config.getAdminReqTopic(), 1, 1);
 		}
-		if (!adminService.topicExists(config.getResTopicName())) {
-			adminService.createTopic(config.getResTopicName(), 1, 1);
+		if (!adminService.topicExists(config.getAdminResTopic())) {
+			adminService.createTopic(config.getAdminResTopic(), 1, 1);
 		}
 		log.info("Starting experiment id: {}", experimentId);
 
@@ -77,13 +76,13 @@ public class AppService implements ApplicationRunner {
 				adminService.createTopic(r);
 			}
 			log.info("Sending load for topic {}", r.getTopic());
-			runnerService.send(config.getReqTopicName(), experimentId, r);
+			runnerService.send(config.getAdminReqTopic(), experimentId, r);
 		} else {
 			appContext.close();
 		}
 	}
 	
-	@KafkaListener(topics = "_benchmark_res", groupId = "_runner")
+	@KafkaListener(topics = "#{config.adminResTopic}", groupId = "#{config.runnerConsumerGroup}")
 	public void consume(@Payload String s,  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId) {
 		log.info("Received finishing of loading for topic {}", s);
 		send();

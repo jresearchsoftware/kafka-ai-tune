@@ -1,6 +1,6 @@
-package org.jresearch.kafka.aitune.runner.app.conf;
+package org.jresearch.kafka.aitune.runner.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.jresearch.kafka.aitune.client.conf.BaseAppConfig;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,17 +9,11 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 import lombok.Data;
 
-@Configuration
+@Configuration(value = "config")
 @Data
 @EnableKafka
 @ComponentScan(basePackages = { "org.jresearch.kafka.aitune.runner.service" })
 @EnableJpaRepositories(basePackages = { "org.jresearch.kafka.aitune.runner.service" })
 @EntityScan(basePackages = { "org.jresearch.kafka.aitune.runner.service" })
-public class AppConfig {
-
-	@Value("${admin.topic:_benchmark_req}")
-	private String reqTopicName;
-
-	@Value("${admin.topic:_benchmark_res}")
-	private String resTopicName;
+public class AppConfig extends BaseAppConfig{
 }

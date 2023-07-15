@@ -8,7 +8,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
-import org.jresearch.kafka.aitune.client.serde.RunnerConfigDeserializer;
 import org.jresearch.kafka.aitune.client.serde.RunnerConfigSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,15 +23,6 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 @ComponentScan(basePackages = { "org.jresearch.kafka.aitune.runner.service" })
 public class RunnerAppConfig {
-
-//	@Bean
-//	public  MeterRegistry getMeterRegistry() {
-//		return new SimpleMeterRegistry();
-//	}
-
-	@Value("${admin.topic:_benchmark_req}")
-	private String adminTopicName;
-
 
 	@Value("${bootstrap.servers}")
 	private String bootstrapServers;

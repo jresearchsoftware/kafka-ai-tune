@@ -1,6 +1,6 @@
 package org.jresearch.kafka.aitune.runner.app;
 
-import org.jresearch.kafka.aitune.runner.app.conf.AppConfig;
+import org.jresearch.kafka.aitune.runner.service.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;

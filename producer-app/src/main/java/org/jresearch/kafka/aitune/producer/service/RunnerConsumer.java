@@ -33,15 +33,13 @@ public class RunnerConsumer {
 		
 	private final MetricService metricService;
 	
-	@Value("${wait.consumers.delay.ms:2000}")
-	private long waitForConsumerDelay;
+	private final ProducerAppConfig config;
 	
-	
-	@KafkaListener(topics = "_benchmark_req", groupId = "group_id")
+	@KafkaListener(topics = "#{config.adminReqTopic}", groupId = "#{config.producerConsumerGroup}")
 	public void consume(@Payload RunnerConfig r,  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId) {
 		while (!adminService.consumersReady(r.getWaitForConsumerGroups())) {
 			try {
-				Thread.sleep(waitForConsumerDelay);
+				Thread.sleep(config.getWaitForConsumerDelay());
 				log.info("Consumers are not ready ...");
 			} catch (InterruptedException e) {
 				throw new ProducerException("Error while waiting for consumers", e);

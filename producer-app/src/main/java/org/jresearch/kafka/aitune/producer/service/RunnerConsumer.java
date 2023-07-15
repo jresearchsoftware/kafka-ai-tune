@@ -36,7 +36,8 @@ public class RunnerConsumer {
 	@Value("${wait.consumers.delay.ms:2000}")
 	private long waitForConsumerDelay;
 	
-	@KafkaListener(topics = "_benchmark", groupId = "group_id")
+	
+	@KafkaListener(topics = "_benchmark_req", groupId = "group_id")
 	public void consume(@Payload RunnerConfig r,  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId) {
 		while (!adminService.consumersReady(r.getWaitForConsumerGroups())) {
 			try {

@@ -1,9 +1,11 @@
 package org.jresearch.kafka.aitune.consumer.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jresearch.kafka.aitune.client.conf.NameUtil;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
 import org.jresearch.kafka.aitune.client.service.MetricService;
@@ -29,8 +31,10 @@ public class RunnerConsumer {
 
 	private final KafkaTemplate<String, String> kafkaTemplate;
 	
+	private final ConsumerAppConfig config;
+	
 	@KafkaListener(topics = "#{config.adminReqTopic}", groupId = "#{config.consumerConsumerGroup}")
-	public void consume(@Payload RunnerConfig r, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId) {
+	public void consume(@Payload RunnerConfig r, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId,@Header(KafkaHeaders.CORRELATION_ID) String correlationId) {
 		if (r.getConsumerName() != null) {
 			log.info("Starting consumer service");
 			metricService.startExperiment(experimentId, NameUtil.getConsumerClientId(experimentId, r));
@@ -40,11 +44,12 @@ public class RunnerConsumer {
 			Runnable cancelTask = () -> {
 				container.stop();
 				log.info("Finishing loading for topic {}", r.getTopic());
-				kafkaTemplate.send("_benchmark_res", experimentId, r.getTopic());
-				executor.shutdown();
-
+				ProducerRecord<String, String> producerRecord = new ProducerRecord<>(config.getAdminResTopic(),experimentId, experimentId); 
+				producerRecord.headers().add(KafkaHeaders.CORRELATION_ID, correlationId.getBytes(StandardCharsets.UTF_8)); 
+				kafkaTemplate.send(producerRecord);
 			};
 			executor.schedule(cancelTask, r.getWorkloadConfig().getTimeInSec(), TimeUnit.SECONDS);
+			executor.shutdown();
 		}
 	}
 }

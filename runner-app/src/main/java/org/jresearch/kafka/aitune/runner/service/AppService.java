@@ -49,7 +49,9 @@ public class AppService implements ApplicationRunner {
 
 	private final String experimentId = RandomStringUtils.randomAlphanumeric(5);
 
-	private  Iterator<RunnerConfig> iterator;
+	private Iterator<RunnerConfig> iterator;
+
+	private String correlationId;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
@@ -76,15 +78,21 @@ public class AppService implements ApplicationRunner {
 				adminService.createTopic(r);
 			}
 			log.info("Sending load for topic {}", r.getTopic());
-			runnerService.send(config.getAdminReqTopic(), experimentId, r);
+			correlationId = RandomStringUtils.random(5);
+			runnerService.send(config.getAdminReqTopic(), experimentId, r, correlationId);
 		} else {
 			appContext.close();
 		}
 	}
-	
+
 	@KafkaListener(topics = "#{config.adminResTopic}", groupId = "#{config.runnerConsumerGroup}")
-	public void consume(@Payload String s,  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId) {
-		log.info("Received finishing of loading for topic {}", s);
-		send();
+	public void consume(@Payload String s, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String experimentId,
+			@Header(KafkaHeaders.CORRELATION_ID) String recievedCorrelationId) {
+		if (correlationId.equals(recievedCorrelationId)) {
+			log.info("Received finishing of loading for topic {}", s);
+			send();
+		}else {
+			throw new IllegalStateException(String.format("Correlation is not matched, expected %s, received %s",correlationId,recievedCorrelationId));
+		}
 	}
 }

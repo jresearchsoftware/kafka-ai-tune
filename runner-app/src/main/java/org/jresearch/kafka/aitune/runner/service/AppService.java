@@ -1,14 +1,13 @@
 package org.jresearch.kafka.aitune.runner.service;
 
-import java.util.Iterator;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
-import org.jresearch.kafka.aitune.runner.app.conf.RunnerConfigurations;
+import org.jresearch.kafka.aitune.runner.conf.IRunnerConfiguratons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -22,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Profile("benchmark")
 public class AppService implements ApplicationRunner {
 
 	@Autowired
@@ -29,7 +29,7 @@ public class AppService implements ApplicationRunner {
 
 	@Autowired
 	@NonNull
-	private RunnerConfigurations runnerConfigurations;
+	private IRunnerConfiguratons runnerConfigurations;
 
 	@Autowired
 	@NonNull
@@ -49,15 +49,12 @@ public class AppService implements ApplicationRunner {
 
 	private final String experimentId = RandomStringUtils.randomAlphanumeric(5);
 
-	private Iterator<RunnerConfig> iterator;
-
 	private String correlationId;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		log.info("Start running app");
-		iterator = runnerConfigurations.getRunners().iterator();
-
+	
 		if (!adminService.topicExists(config.getAdminReqTopic())) {
 			adminService.createTopic(config.getAdminReqTopic(), 1, 1);
 		}
@@ -71,8 +68,8 @@ public class AppService implements ApplicationRunner {
 	}
 
 	private void send() {
-		if (iterator.hasNext()) {
-			RunnerConfig r = iterator.next();
+		if (runnerConfigurations.hasNext()) {
+			RunnerConfig r = runnerConfigurations.next();
 			if (r.isShouldCreateTopic()) {
 				log.debug("Creating topic {}", r.getTopic());
 				adminService.createTopic(r);

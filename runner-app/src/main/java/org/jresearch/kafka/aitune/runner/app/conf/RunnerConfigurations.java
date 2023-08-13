@@ -1,5 +1,6 @@
 package org.jresearch.kafka.aitune.runner.app.conf;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -8,8 +9,10 @@ import org.jresearch.kafka.aitune.client.conf.ConfigEntity;
 import org.jresearch.kafka.aitune.client.conf.ConfigNotFoundException;
 import org.jresearch.kafka.aitune.client.conf.YamlPropertySourceFactory;
 import org.jresearch.kafka.aitune.client.model.RunnerConfig;
+import org.jresearch.kafka.aitune.runner.conf.IRunnerConfiguratons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +22,8 @@ import lombok.Data;
 @PropertySource(value = "file:${RUNNER}", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "configuration")
 @Data
-public class RunnerConfigurations {
+@Profile("benchmark")
+public class RunnerConfigurations implements IRunnerConfiguratons{
 	
 	private List<RunnerConfig> runners;
 	
@@ -31,6 +35,8 @@ public class RunnerConfigurations {
 	
 	@Autowired
 	private ConsumerConfigurations consumers;
+	
+	private Iterator<RunnerConfig> iterator;
 
 	@PostConstruct
 	protected void init() {
@@ -39,6 +45,17 @@ public class RunnerConfigurations {
 			r.setWorkloadConfig(workloads.get(r.getWorkloadName()).orElseThrow(()->new ConfigNotFoundException(ConfigEntity.workload, r.getWorkloadName())));
 			r.setConsumerConfig(consumers.get(r.getConsumerName()).orElse(null));
 		});
+		iterator = runners.iterator();
+	}
+
+	@Override
+	public RunnerConfig next() {
+		return iterator.next();
+	}
+
+	@Override
+	public boolean hasNext() {
+		return iterator.hasNext();
 	}
 	
 }

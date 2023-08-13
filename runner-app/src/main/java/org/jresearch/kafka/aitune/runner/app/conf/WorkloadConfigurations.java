@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.jresearch.kafka.aitune.client.conf.YamlPropertySourceFactory;
 import org.jresearch.kafka.aitune.client.model.WorkloadConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import lombok.Data;
 @Component
 @PropertySource(value = "file:${WORKLOADS}", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "configuration")
+@Profile("benchmark")
 @Data
 public class WorkloadConfigurations {
 
